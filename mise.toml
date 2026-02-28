@@ -1,0 +1,8 @@
+[tools]
+"aqua:securego/gosec" = "latest"
+gofumpt = "latest"
+golines = "latest"
+hk = "latest"
+just = "latest"
+pkl = "latest"
+prettier = "latest"
