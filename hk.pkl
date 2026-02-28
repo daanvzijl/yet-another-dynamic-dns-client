@@ -1,0 +1,38 @@
+amends "package://github.com/jdx/hk/releases/download/v1.36.0/hk@1.36.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.36.0/hk@1.36.0#/Builtins.pkl"
+
+local linters = new Mapping<String, Step> {
+    // Add linters here. Examples:
+    ["prettier"] = Builtins.prettier
+    ["eslint"] = Builtins.eslint
+    ["ruff"] = Builtins.ruff
+    ["go_fmt"] = Builtins.go_fmt
+    ["go_fumpt"] = Builtins.go_fumpt
+    ["go_lines"] = Builtins.go_lines
+    ["go_sec"] = (Builtins.go_sec) {
+        check = "gosec ./..."
+        glob = "**/*.go"
+    }
+
+    // Or define custom steps:
+    // ["custom"] {
+    //     glob = "**/*.py"
+    //     check = "mypy {{ files }}"
+    // }
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = true
+        stash = "git"
+        steps = linters
+    }
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+    ["check"] {
+        steps = linters
+        report = #"node scripts/upload-timings.js <<<"$HK_REPORT_JSON""#
+    }
+}
