@@ -1,7 +1,10 @@
 .git
 .idea
+.github
 justfile
 mise.toml
 README.md
 LICENSE
 hk.pkl
+renovate.json
+.editorconfig
