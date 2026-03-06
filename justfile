@@ -9,3 +9,6 @@ default:
 # Install task: set up the repository
 install:
     hk install
+
+lint:
+    hk check --all
