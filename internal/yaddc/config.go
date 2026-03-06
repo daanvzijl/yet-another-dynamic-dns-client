@@ -25,7 +25,7 @@ func LoadConfig() (Config, error) {
 }
 
 func NewIPProvider() (IPProvider, error) {
-	return NewIpifyProvider(), nil
+	return newIpifyProvider(), nil
 }
 
 func NewDNSProvider() (DNSProvider, error) {

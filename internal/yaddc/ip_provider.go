@@ -10,21 +10,21 @@ import (
 	"net/http"
 )
 
-type IpifyProvider struct {
+type ipifyProvider struct {
 	client *http.Client
 }
 
-type IpifyResponse struct {
+type ipifyResponse struct {
 	IP string `json:"ip"`
 }
 
-func NewIpifyProvider() *IpifyProvider {
-	return &IpifyProvider{
+func newIpifyProvider() *ipifyProvider {
+	return &ipifyProvider{
 		client: &http.Client{},
 	}
 }
 
-func (p *IpifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
+func (p *ipifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
@@ -52,7 +52,7 @@ func (p *IpifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("unexpected status: %s", resp.Status)
 	}
 
-	var data IpifyResponse
+	var data ipifyResponse
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return "", err
 	}
