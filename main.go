@@ -2,154 +2,50 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net"
-	"net/http"
-	"os"
-	"time"
 
-	"github.com/cloudflare/cloudflare-go/v6"
-	"github.com/cloudflare/cloudflare-go/v6/dns"
-	"github.com/cloudflare/cloudflare-go/v6/option"
+	"yaddc/internal/yaddc"
 )
 
-type IPAddr struct {
-	Number string `json:"ip"`
-}
-
-var dnsProvider = struct {
-	Token     string
-	ZoneID    string
-	RecordIds string
-}{
-	Token:     os.Getenv("CLOUDFLARE_API_TOKEN"),
-	ZoneID:    os.Getenv("CLOUDFLARE_ZONE_ID"),
-	RecordIds: os.Getenv("CLOUDFLARE_DNS_RECORD_ID"),
-}
-
 func main() {
-	if err := checkEnv(); err != nil {
-		panic(err)
-	}
-
-	currentIP := getCurrentIP()
-	recordData := getRecordData()
-
-	if compareIPs(currentIP, recordData) {
-		fmt.Println("No update required")
-	} else {
-		fmt.Println("Update required...")
-		updateRecordData(currentIP)
-	}
-}
-
-func compareIPs(ip1, ip2 string) bool {
-	return ip1 == ip2
-}
-
-func isValidIPv4(ip string) bool {
-	return net.ParseIP(ip) != nil && net.ParseIP(ip).To4() != nil
-}
-
-func checkEnv() error {
-	missing := []string{}
-	if dnsProvider.Token == "" {
-		missing = append(missing, "CLOUDFLARE_API_TOKEN")
-	}
-	if dnsProvider.ZoneID == "" {
-		missing = append(missing, "CLOUDFLARE_ZONE_ID")
-	}
-	if len(missing) > 0 {
-		return fmt.Errorf("missing required environment variables: %v", missing)
-	}
-	return nil
-}
-
-func updateRecordData(ip string) {
-	client := cloudflare.NewClient(
-		option.WithAPIToken(dnsProvider.Token),
-	)
-	updateParams := dns.RecordUpdateParams{
-		ZoneID: cloudflare.F(dnsProvider.ZoneID),
-		Body: dns.ARecordParam{
-			Name:    cloudflare.F("vpn.vanzijl.io"),
-			Type:    cloudflare.F(dns.ARecordTypeA),
-			Content: cloudflare.F(ip),
-			TTL:     cloudflare.F(dns.TTL1),
-		},
-	}
-	recordResponse, err := client.DNS.Records.Update(
-		context.Background(),
-		dnsProvider.RecordIds,
-		updateParams,
-	)
+	cfg, err := yaddc.LoadConfig()
 	if err != nil {
-		panic(err.Error())
+		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	fmt.Printf("Updated content to: %+v\n", recordResponse.Content)
-}
-
-func getRecordData() string {
-	client := cloudflare.NewClient(
-		option.WithAPIToken(dnsProvider.Token),
-	)
-	recordResponse, err := client.DNS.Records.Get(
-		context.Background(),
-		dnsProvider.RecordIds,
-		dns.RecordGetParams{
-			ZoneID: cloudflare.F(dnsProvider.ZoneID),
-		},
-	)
+	ipProvider, err := yaddc.NewIPProvider()
 	if err != nil {
-		panic(err.Error())
-	}
-	if recordResponse.Type != "A" {
-		panic(err.Error())
-	}
-	return recordResponse.Content
-}
-
-func getCurrentIP() string {
-	url := "https://api.ipify.org?format=json"
-
-	yaddcClient := http.Client{
-		Timeout: time.Second * 5, // Timeout after 2 seconds
+		log.Fatalf("Failed to create IP provider: %v", err)
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	dnsProvider, err := yaddc.NewDNSProvider()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to create DNS provider: %v", err)
 	}
 
-	req.Header.Set("User-Agent", "yaddc/0.1 (+https://github.com/daanvzijl/yet-another-dynamic-dns-client)")
-
-	res, getErr := yaddcClient.Do(req)
-	if getErr != nil {
-		log.Fatal(getErr)
+	currentIP, err := ipProvider.GetCurrentIP(context.Background())
+	if err != nil {
+		log.Fatalf("Failed to get current IP: %v", err)
 	}
 
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
+	fmt.Printf("Current IP: %s\n", currentIP)
 
-	body, readErr := ioutil.ReadAll(res.Body)
-	if readErr != nil {
-		log.Fatal(readErr)
-	}
+	for _, record := range cfg.ARecords {
+		recordIP, err := dnsProvider.GetRecordIP(context.Background(), record)
+		if err != nil {
+			log.Fatalf("Failed to get record IP for %s: %v", record, err)
+		}
 
-	var ip IPAddr
-	jsonErr := json.Unmarshal(body, &ip)
-	if jsonErr != nil {
-		log.Fatalf("unable to parse value: %q, error: %s", string(body), jsonErr.Error())
-	}
+		if currentIP == recordIP {
+			fmt.Printf("%s is up to date\n", record)
+			continue
+		}
 
-	if !isValidIPv4(ip.Number) {
-		log.Fatalf("invalid IPv4 address: %s", ip.Number)
-	}
+		if err := dnsProvider.UpdateRecordIP(context.Background(), record, currentIP); err != nil {
+			log.Fatalf("Failed to update record IP for %s: %v", record, err)
+		}
 
-	return ip.Number
+		fmt.Printf("%s updated to %s\n", record, currentIP)
+	}
 }
