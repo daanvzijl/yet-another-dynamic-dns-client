@@ -15,7 +15,7 @@ jobs:
 
       - uses: jdx/mise-action@v3
 
-      - run: hk check --all
+      - run: hk check
 
   test:
     runs-on: ubuntu-latest
