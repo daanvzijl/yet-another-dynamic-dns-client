@@ -1,5 +1,5 @@
 [tools]
-"aqua:editorconfig-checker/editorconfig-checker" = "3.6.0"
+"aqua:editorconfig-checker/editorconfig-checker" = "3.6.1"
 "aqua:securego/gosec" = "2.23.0"
 go = "1.26"
 "go:github.com/golangci/golines" = "0.15.0"
