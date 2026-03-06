@@ -1,8 +1,11 @@
 [tools]
+"aqua:editorconfig-checker/editorconfig-checker" = "latest"
 "aqua:securego/gosec" = "latest"
+"go:golang.org/x/vuln/cmd/govulncheck" = "latest"
 gofumpt = "latest"
 golines = "latest"
 hk = "latest"
 just = "latest"
 pkl = "latest"
 prettier = "latest"
+staticcheck = "latest"
