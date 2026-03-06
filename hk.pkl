@@ -11,7 +11,7 @@ local linters = new Mapping<String, Step> {
     ["go_lines"] = Builtins.go_lines
     ["go_sec"] = (Builtins.go_sec) {
         check = "gosec ./..."
-        glob = "**/*.go"
+        glob = "**/**.go"
     }
 
     // Or define custom steps:
