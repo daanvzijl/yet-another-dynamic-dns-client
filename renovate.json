@@ -1,13 +1,13 @@
 {
   "enabledManagers": ["mise"],
-  "grouping": {
-    "minor": {
-      "groupName": "mise minor updates",
-      "matchUpdateTypes": ["minor", "patch"]
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "mise minor updates"
     },
-    "major": {
-      "groupName": "mise major updates",
-      "matchUpdateTypes": ["major"]
+    {
+      "matchUpdateTypes": ["major"],
+      "groupName": "mise major updates"
     }
-  }
+  ]
 }
