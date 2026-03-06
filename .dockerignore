@@ -1,0 +1,7 @@
+.git
+.idea
+justfile
+mise.toml
+README.md
+LICENSE
+hk.pkl
