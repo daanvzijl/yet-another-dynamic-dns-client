@@ -1,14 +1,28 @@
 #!/usr/bin/env -S just --justfile
-# ^ A shebang isn't required, but allows a justfile to be executed
-#   like a script, with `./justfile test`, for example.
 
-# Default task: list all recipes
 default:
     just --list
 
-# Install task: set up the repository
 install:
     hk install
 
 lint:
     hk check --all
+
+fix:
+    hk fix --all
+
+test:
+    go test ./...
+
+test-race:
+    go test -race ./...
+
+build:
+    go build -o yaddc ./main.go
+
+run:
+    go run ./main.go
+
+docker-build:
+    docker build -t yaddc .
