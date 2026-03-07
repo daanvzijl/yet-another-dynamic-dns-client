@@ -1,4 +1,5 @@
 {
+  "schedule": ["* * * * 5"],
   "enabledManagers": ["mise"],
   "packageRules": [
     {
