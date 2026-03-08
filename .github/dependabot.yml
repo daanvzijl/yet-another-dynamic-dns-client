@@ -25,3 +25,16 @@ updates:
       major:
         update-types:
           - "major"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+      major:
+        update-types:
+          - "major"

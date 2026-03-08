@@ -6,7 +6,11 @@ type IPProvider interface {
 	GetCurrentIP(ctx context.Context) (string, error)
 }
 
+type DNSRecord interface {
+	IP() string
+	Update(ctx context.Context, ip string) error
+}
+
 type DNSProvider interface {
-	GetRecordIP(ctx context.Context, domain string) (string, error)
-	UpdateRecordIP(ctx context.Context, domain string, ip string) error
+	GetRecord(ctx context.Context, domain string) (DNSRecord, error)
 }

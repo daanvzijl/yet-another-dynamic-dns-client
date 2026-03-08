@@ -1,56 +1,81 @@
-# yaddc
+# Yet another dynamic dns client
 
-Yet another dynamic DNS client. Syncs Cloudflare A records to your current public IP.
+A lightweight dynamic DNS client that keeps your DNS A records in sync with your current public IP.
 
-## Prerequisites
+## Supported DNS providers
 
-- [mise](https://mise.jdx.dev/)
+| Provider   | Environment variables        |
+| ---------- | ---------------------------- |
+| Cloudflare | `CF_API_TOKEN`, `CF_ZONE_ID` |
 
 ## Setup
 
-```sh
-just install
-```
+**Prerequisites**
+
+- mise
+
+Run `just install` to get going.
 
 ## Configuration
 
-| Variable          | Required | Description                                                                                  |
-| ----------------- | -------- | -------------------------------------------------------------------------------------------- |
-| `CF_API_TOKEN`    | Yes      | Cloudflare API token with DNS edit permissions                                               |
-| `CF_ZONE_ID`      | Yes      | Cloudflare zone ID                                                                           |
-| `YADDC_A_RECORDS` | Yes      | Comma-separated list of A records to sync (e.g. `record-a.example.com,record-b.example.com`) |
+| Variable             | Required   | Description                                                                                  |
+| -------------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| `YADDC_A_RECORDS`    | Yes        | Comma-separated list of A records to sync, e.g. `record-a.example.com, record-b.example.com` |
+| `YADDC_DNS_PROVIDER` | Yes        | DNS backend to use. Defaults to `cloudflare`                                                 |
+| `CF_API_TOKEN`       | Cloudflare | Cloudflare API token with DNS edit permissions                                               |
+| `CF_ZONE_ID`         | Cloudflare | Cloudflare zone ID for your domain                                                           |
 
-## Usage
-
-```sh
-just run
-```
-
-Or build and run:
+## Run
 
 ```sh
-just build
+YADDC_DNS_PROVIDER=cloudflare \
+CF_API_TOKEN=your_token \
+CF_ZONE_ID=your_zone_id \
+YADDC_A_RECORDS=record-a.example.com \
+go run .
 ```
 
 ## Docker
 
 ```sh
-just docker-build
-docker run --rm \
-  -e CF_API_TOKEN=... \
-  -e CF_ZONE_ID=... \
-  -e YADDC_A_RECORDS=home.example.com \
-  yaddc
+docker run \
+  -e YADDC_DNS_PROVIDER=cloudflare \
+  -e CF_API_TOKEN=your_token \
+  -e CF_ZONE_ID=your_zone_id \
+  -e YADDC_A_RECORDS=record-a.example.com \
+  ghcr.io/daanvzijl/yet-another-dynamic-dns-client:latest
 ```
+
+Multi-platform images are published for `linux/amd64` and `linux/arm64`.
+
+## Pre-built binaries
+
+Binaries for Linux, macOS, and Windows are attached to each [release](../../releases).
+
+| File                      | Platform            |
+| ------------------------- | ------------------- |
+| `yaddc-linux-amd64`       | Linux x86_64        |
+| `yaddc-linux-arm64`       | Linux arm64         |
+| `yaddc-darwin-amd64`      | macOS x86_64        |
+| `yaddc-darwin-arm64`      | macOS Apple Silicon |
+| `yaddc-windows-amd64.exe` | Windows x86_64      |
 
 ## Development
 
 ```sh
-just lint       # run all linters
-just fix        # run linters with auto-fix
+just test       # run tests
 just test-race  # run tests with race detector
+just lint       # run all linters
 ```
 
-## License
+## Release
 
-MIT
+Releases are triggered by merging a PR with one of the following labels:
+
+| Label           | Effect                              |
+| --------------- | ----------------------------------- |
+| `release:patch` | Bumps patch version (1.0.0 → 1.0.1) |
+| `release:minor` | Bumps minor version (1.0.0 → 1.1.0) |
+| `release:major` | Bumps major version (1.0.0 → 2.0.0) |
+
+If multiple labels are applied, `major` takes precedence over `minor` over `patch`.

@@ -29,15 +29,20 @@ func NewIPProvider() (IPProvider, error) {
 }
 
 func NewDNSProvider() (DNSProvider, error) {
-	apiToken := os.Getenv("CF_API_TOKEN")
-	zoneID := os.Getenv("CF_ZONE_ID")
+	provider := os.Getenv("YADDC_DNS_PROVIDER")
 
-	if apiToken == "" {
-		return nil, fmt.Errorf("CF_API_TOKEN is not set")
+	switch provider {
+	case "cloudflare":
+		apiToken := os.Getenv("CF_API_TOKEN")
+		zoneID := os.Getenv("CF_ZONE_ID")
+		if apiToken == "" {
+			return nil, fmt.Errorf("CF_API_TOKEN is not set")
+		}
+		if zoneID == "" {
+			return nil, fmt.Errorf("CF_ZONE_ID is not set")
+		}
+		return NewCloudflareProvider(apiToken, zoneID), nil
+	default:
+		return nil, fmt.Errorf("unknown DNS provider: %s", provider)
 	}
-	if zoneID == "" {
-		return nil, fmt.Errorf("CF_ZONE_ID is not set")
-	}
-
-	return NewCloudflareProvider(apiToken, zoneID), nil
 }

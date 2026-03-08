@@ -12,20 +12,20 @@ func SyncRecords(ctx context.Context, ipProvider IPProvider, dnsProvider DNSProv
 		return fmt.Errorf("failed to get current IP: %w", err)
 	}
 
-	for _, record := range records {
-		recordIP, err := dnsProvider.GetRecordIP(ctx, record)
+	for _, domain := range records {
+		record, err := dnsProvider.GetRecord(ctx, domain)
 		if err != nil {
-			return fmt.Errorf("failed to get record IP for %s: %w", record, err)
+			return fmt.Errorf("failed to get record for %s: %w", domain, err)
 		}
 
-		if currentIP == recordIP {
+		if currentIP == record.IP() {
 			continue
 		}
 
-		if err := dnsProvider.UpdateRecordIP(ctx, record, currentIP); err != nil {
-			return fmt.Errorf("failed to update record IP for %s: %w", record, err)
+		if err := record.Update(ctx, currentIP); err != nil {
+			return fmt.Errorf("failed to update record for %s: %w", domain, err)
 		}
-		log.Printf("%s updated to %s", record, currentIP)
+		log.Printf("%s updated to %s", domain, currentIP)
 	}
 
 	return nil
