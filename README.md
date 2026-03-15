@@ -21,7 +21,7 @@ Run `just install` to get going.
 | Variable             | Required   | Description                                                                                  |
 | -------------------- | ---------- | -------------------------------------------------------------------------------------------- |
 | `YADDC_A_RECORDS`    | Yes        | Comma-separated list of A records to sync, e.g. `record-a.example.com, record-b.example.com` |
-| `YADDC_DNS_PROVIDER` | Yes        | DNS backend to use. Defaults to `cloudflare`                                                 |
+| `YADDC_DNS_PROVIDER` | Yes        | DNS backend to use.                                                                          |
 | `CF_API_TOKEN`       | Cloudflare | Cloudflare API token with DNS edit permissions                                               |
 | `CF_ZONE_ID`         | Cloudflare | Cloudflare zone ID for your domain                                                           |
 
@@ -47,18 +47,6 @@ docker run \
 ```
 
 Multi-platform images are published for `linux/amd64` and `linux/arm64`.
-
-## Pre-built binaries
-
-Binaries for Linux, macOS, and Windows are attached to each [release](../../releases).
-
-| File                      | Platform            |
-| ------------------------- | ------------------- |
-| `yaddc-linux-amd64`       | Linux x86_64        |
-| `yaddc-linux-arm64`       | Linux arm64         |
-| `yaddc-darwin-amd64`      | macOS x86_64        |
-| `yaddc-darwin-arm64`      | macOS Apple Silicon |
-| `yaddc-windows-amd64.exe` | Windows x86_64      |
 
 ## Development
 
