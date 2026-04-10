@@ -2,7 +2,7 @@ module yaddc
 
 go 1.26
 
-require github.com/cloudflare/cloudflare-go/v6 v6.8.0
+require github.com/cloudflare/cloudflare-go/v6 v6.9.0
 
 require (
 	github.com/tidwall/gjson v1.18.0 // indirect
