@@ -1,11 +1,11 @@
 [tools]
-"aqua:editorconfig-checker/editorconfig-checker" = "3.11.3"
+"aqua:editorconfig-checker/editorconfig-checker" = "4.0.2"
 "aqua:securego/gosec" = "2.29.0"
 go = "1.27.2"
 "go:github.com/golangci/golines" = "0.16.0"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.9.0"
 gofumpt = "0.12.0"
-hk = "1.58.1"
+hk = "2.6.0"
 just = "1.58.0"
 pkl = "0.32.1"
 prettier = "3.9.10"
