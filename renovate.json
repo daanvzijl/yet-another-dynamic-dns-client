@@ -1,6 +1,21 @@
 {
   "schedule": ["* * * * 5"],
-  "enabledManagers": ["mise"],
+  "enabledManagers": ["mise", "custom.regex"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update hk pkl package imports",
+      "managerFilePatterns": ["/(^|/)hk\\.pkl$/"],
+      "matchStrings": [
+        "package://github\\.com/jdx/hk/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/",
+        "/hk@(?<currentValue>\\d+\\.\\d+\\.\\d+)#"
+      ],
+      "matchStringsStrategy": "any",
+      "depNameTemplate": "jdx/hk",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    }
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
