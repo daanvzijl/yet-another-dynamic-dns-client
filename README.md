@@ -48,6 +48,32 @@ docker run \
 
 Multi-platform images are published for `linux/amd64` and `linux/arm64`.
 
+## Scheduling
+
+yaddc is a oneshot: each run checks your public IP, updates any A records that are out of date,
+and exits. It does not keep running or poll on its own, so trigger it on a schedule with an
+external tool such as cron, a systemd timer or a Kubernetes `CronJob`.
+
+The exit code is non-zero when any record fails to sync, so your scheduler can alert on failures.
+
+### cron
+
+Put the configuration in an env file (it contains your API token, so `chmod 600` it):
+
+```sh
+# /etc/yaddc.env
+YADDC_DNS_PROVIDER=cloudflare
+CF_API_TOKEN=your_token
+CF_ZONE_ID=your_zone_id
+YADDC_A_RECORDS=record-a.example.com
+```
+
+Then run it every 5 minutes:
+
+```cron
+*/5 * * * * docker run --rm --env-file /etc/yaddc.env ghcr.io/daanvzijl/yet-another-dynamic-dns-client:latest
+```
+
 ## Development
 
 ```sh

@@ -16,9 +16,14 @@ func LoadConfig() (Config, error) {
 		return Config{}, fmt.Errorf("YADDC_A_RECORDS is not set")
 	}
 
-	records := strings.Split(raw, ",")
-	for i, r := range records {
-		records[i] = strings.TrimSpace(r)
+	var records []string
+	for r := range strings.SplitSeq(raw, ",") {
+		if r = strings.TrimSpace(r); r != "" {
+			records = append(records, r)
+		}
+	}
+	if len(records) == 0 {
+		return Config{}, fmt.Errorf("YADDC_A_RECORDS contains no records")
 	}
 
 	return Config{ARecords: records}, nil
@@ -42,6 +47,8 @@ func NewDNSProvider() (DNSProvider, error) {
 			return nil, fmt.Errorf("CF_ZONE_ID is not set")
 		}
 		return NewCloudflareProvider(apiToken, zoneID), nil
+	case "":
+		return nil, fmt.Errorf("YADDC_DNS_PROVIDER is not set")
 	default:
 		return nil, fmt.Errorf("unknown DNS provider: %s", provider)
 	}

@@ -7,11 +7,15 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 )
 
+const ipifyURL = "https://api.ipify.org?format=json"
+
 type ipifyProvider struct {
 	client *http.Client
+	url    string
 }
 
 type ipifyResponse struct {
@@ -21,6 +25,7 @@ type ipifyResponse struct {
 func newIpifyProvider() *ipifyProvider {
 	return &ipifyProvider{
 		client: &http.Client{},
+		url:    ipifyURL,
 	}
 }
 
@@ -28,7 +33,7 @@ func (p *ipifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
-		"https://api.ipify.org?format=json",
+		p.url,
 		nil,
 	)
 	if err != nil {
@@ -62,6 +67,10 @@ func (p *ipifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
 
 	if data.IP == "" {
 		return "", errors.New("empty ip response")
+	}
+
+	if ip := net.ParseIP(data.IP); ip == nil || ip.To4() == nil {
+		return "", fmt.Errorf("invalid IPv4 address in response: %q", data.IP)
 	}
 
 	return data.IP, nil

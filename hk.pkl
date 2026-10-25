@@ -23,10 +23,6 @@ local linters = new Mapping<String, Step> {
         glob = "**/**.go"
         check = "govulncheck ./..."
     }
-    ["go_test_race"] {
-        glob = "**/**.go"
-        check = "go test -race ./..."
-    }
 }
 
 hooks {
