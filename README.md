@@ -58,7 +58,9 @@ just lint       # run all linters
 
 ## Release
 
-Releases are triggered by merging a PR with one of the following labels:
+Releases are triggered by merging a PR into `main` with one of the following labels. The
+Docker image is built and pushed first; the tag and GitHub Release are only created once
+that succeeds.
 
 | Label           | Effect                              |
 | --------------- | ----------------------------------- |

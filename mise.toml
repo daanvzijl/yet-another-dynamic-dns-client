@@ -5,7 +5,7 @@ go = "1.27.3"
 "go:github.com/golangci/golines" = "0.16.0"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.9.0"
 gofumpt = "0.12.0"
-hk = "2.8.1"
+hk = { version = "2.8.1", workflow = "release.yml" }
 just = "1.59.0"
 pkl = "0.32.2"
 prettier = "3.9.10"
