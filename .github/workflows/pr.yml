@@ -19,6 +19,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
@@ -26,7 +29,39 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: go test ./...
+      - name: Test
+        run: go test -race -shuffle=on -coverprofile=coverage.out ./...
+
+      - name: Build coverage report
+        run: |
+          set -e
+
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {print $NF}')
+
+          {
+            echo "### Test coverage: ${total}"
+            echo
+            echo "<details><summary>Per function</summary>"
+            echo
+            echo '```'
+            go tool cover -func=coverage.out
+            echo '```'
+            echo
+            echo "</details>"
+          } > coverage.md
+
+          cat coverage.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Fork and Dependabot PRs get a read-only token, so commenting would fail.
+      - name: Comment coverage on PR
+        if: >-
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.actor != 'dependabot[bot]'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment "$PR" --edit-last --create-if-none --body-file coverage.md
 
   docker:
     runs-on: ubuntu-latest

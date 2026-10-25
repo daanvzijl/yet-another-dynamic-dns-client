@@ -14,6 +14,8 @@ FROM gcr.io/distroless/static-debian12@sha256:d75cdd72874d4790092fcb1b058493ecf6
 
 COPY --from=build /app/yaddc /yaddc
 
+USER nonroot:nonroot
+
 LABEL org.opencontainers.image.source="https://github.com/daanvzijl/yet-another-dynamic-dns-client"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.description="A lightweight dynamic DNS client"
