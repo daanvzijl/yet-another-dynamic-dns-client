@@ -1,6 +1,6 @@
 module yaddc
 
-go 1.26
+go 1.27
 
 require github.com/cloudflare/cloudflare-go/v6 v6.10.0
 

@@ -35,7 +35,10 @@ func (p *ipifyProvider) GetCurrentIP(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	req.Header.Set("User-Agent", "yaddc/0.1 (+https://github.com/daanvzijl/yet-another-dynamic-dns-client)")
+	req.Header.Set(
+		"User-Agent",
+		"yaddc/"+Version+" (+https://github.com/daanvzijl/yet-another-dynamic-dns-client)",
+	)
 
 	resp, err := p.client.Do(req) // #nosec G704
 	if err != nil {

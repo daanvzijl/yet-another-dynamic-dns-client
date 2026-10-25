@@ -23,7 +23,12 @@ func main() {
 		log.Fatalf("Failed to create DNS provider: %v", err)
 	}
 
-	if err := yaddc.SyncRecords(context.Background(), ipProvider, dnsProvider, cfg.ARecords); err != nil {
+	if err := yaddc.SyncRecords(
+		context.Background(),
+		ipProvider,
+		dnsProvider,
+		cfg.ARecords,
+	); err != nil {
 		log.Fatalf("Failed to sync records: %v", err)
 	}
 }
