@@ -2,11 +2,11 @@
 "aqua:editorconfig-checker/editorconfig-checker" = "4.0.2"
 "aqua:securego/gosec" = "2.30.0"
 go = "1.27.3"
-"go:github.com/golangci/golines" = "0.16.0"
+"go:github.com/golangci/golines" = "0.16.1"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1.9.0"
 gofumpt = "0.12.0"
-hk = { version = "2.11.0", workflow = "release.yml" }
+hk = { version = "2.11.1", workflow = "release.yml" }
 just = "1.59.0"
-pkl = "0.32.2"
+pkl = "0.33.0"
 prettier = "3.9.10"
 staticcheck = "2026.2.2"
