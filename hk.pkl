@@ -4,25 +4,9 @@ import "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Builtin
 local linters = new Mapping<String, Step> {
     ["editorconfig_checker"] = Builtins.editorconfig_checker
     ["prettier"] = Builtins.prettier
-    ["go_fmt"] = Builtins.go_fmt
-    ["go_fumpt"] = Builtins.go_fumpt
-    ["go_lines"] = Builtins.go_lines
-    ["go_vet"] = (Builtins.go_vet) {
-        check = "go vet ./..."
-    }
+    ["golangci_lint"] = Builtins.golangci_lint
     ["gomod_tidy"] = Builtins.gomod_tidy
-    ["go_sec"] = (Builtins.go_sec) {
-        check = "gosec ./..."
-        glob = "**/**.go"
-    }
-    ["staticcheck"] {
-        glob = "**/**.go"
-        check = "staticcheck ./..."
-    }
-    ["govulncheck"] {
-        glob = "**/**.go"
-        check = "govulncheck ./..."
-    }
+    ["go_vuln_check"] = Builtins.go_vuln_check
 }
 
 hooks {
