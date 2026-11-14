@@ -1,0 +1,10 @@
+version: "2"
+
+linters:
+  enable:
+    - gosec
+
+formatters:
+  enable:
+    - gofumpt
+    - golines
