@@ -1,9 +1,9 @@
 [tools]
 "aqua:editorconfig-checker/editorconfig-checker" = "4.0.2"
 go = "1.27.4"
-"go:golang.org/x/vuln/cmd/govulncheck" = "1.9.0"
+"go:golang.org/x/vuln/cmd/govulncheck" = "1.10.0"
 golangci-lint = "2.15.0"
-hk = { version = "2.12.0", workflow = "release.yml" }
+hk = { version = "2.14.0", workflow = "release.yml" }
 just = "1.59.0"
-pkl = "0.33.0"
+pkl = "0.33.1"
 prettier = "3.10.1"
